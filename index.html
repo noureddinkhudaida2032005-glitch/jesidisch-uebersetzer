@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jesidisch Wörterbuch</title>
+    <style>
+        :root {
+            --primary: #2563eb; --bg: #f8fafc; --card: #ffffff;
+            --text: #1e293b; --accent: #f59e0b;
+        }
+        body.dark {
+            --bg: #0f172a; --card: #1e293b; --text: #f1f5f9;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: var(--bg); color: var(--text); 
+            margin: 0; transition: 0.3s;
+        }
+
+        /* Header & Navigation */
+        header {
+            padding: 20px; text-align: center;
+            background: var(--card); box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container { max-width: 500px; margin: auto; padding: 15px; }
+
+        /* Suchfeld */
+        .search-area {
+            position: sticky; top: 10px; z-index: 10; margin-bottom: 20px;
+        }
+        input {
+            width: 100%; padding: 16px; border-radius: 15px;
+            border: 2px solid var(--primary); background: var(--card);
+            color: var(--text); font-size: 18px; outline: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Karten-Design */
+        .result-card {
+            background: var(--card); padding: 20px; border-radius: 15px;
+            margin-bottom: 12px; display: flex; justify-content: space-between;
+            align-items: center; border-left: 5px solid var(--primary);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } }
+
+        .word-box .main-word { font-weight: bold; font-size: 1.2em; display: block; }
+        .word-box .sub-word { opacity: 0.7; font-size: 0.9em; }
+
+        /* Buttons */
+        .icon-btn { 
+            background: none; border: none; font-size: 1.4em; 
+            cursor: pointer; padding: 5px; 
+        }
+
+        .mode-switch {
+            position: fixed; bottom: 20px; right: 20px;
+            background: var(--primary); color: white;
+            width: 50px; height: 50px; border-radius: 25px;
+            border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2 style="margin:0">☀️ Jesidisch Translator</h2>
+</header>
+
+<div class="container">
+    <div class="search-area">
+        <input type="text" id="search" placeholder="Suchen...">
+    </div>
+    
+    <div id="results"></div>
+</div>
+
+<button class="mode-switch" onclick="toggleMode()">🌓</button>
+
+<script>
+    let dictionary = {};
+    let favs = JSON.parse(localStorage.getItem('myFavs')) || [];
+
+    // 1. Lade deine JSON Datei
+    fetch('jesidisch.json')
+        .then(res => res.json())
+        .then(data => {
+            dictionary = data;
+            console.log("Daten geladen");
+        });
+
+    function toggleMode() {
+        document.body.classList.toggle('dark');
+    }
+
+    function toggleFav(word) {
+        if(favs.includes(word)) favs = favs.filter(f => f !== word);
+        else favs.push(word);
+        localStorage.setItem('myFavs', JSON.stringify(favs));
+        search();
+    }
+
+    function copyText(text) {
+        navigator.clipboard.writeText(text);
+        alert("Kopiert!");
+    }
+
+    function search() {
+        const query = document.getElementById('search').value.toLowerCase();
+        const container = document.getElementById('results');
+        if(!query) { container.innerHTML = ""; return; }
+
+        let html = "";
+        for(let key in dictionary) {
+            if(key.toLowerCase().includes(query) || dictionary[key].toLowerCase().includes(query)) {
+                const isFav = favs.includes(key) ? "⭐" : "☆";
+                html += `
+                    <div class="result-card">
+                        <div class="word-box">
+                            <span class="main-word">${key}</span>
+                            <span class="sub-word">${dictionary[key]}</span>
+                        </div>
+                        <div>
+                            <button class="icon-btn" onclick="copyText('${dictionary[key]}')">📋</button>
+                            <button class="icon-btn" onclick="toggleFav('${key}')">${isFav}</button>
+                        </div>
+                    </div>`;
+            }
+        }
+        container.innerHTML = html || "<p>Nichts gefunden...</p>";
+    }
+
+    document.getElementById('search').addEventListener('input', search);
+</script>
+
+</body>
+</html>
