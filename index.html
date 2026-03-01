@@ -3,229 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jesidisch Pro - Ultimate</title>
+    <title>EZ-DE-TRANSLATOR</title>
     
-    <meta name="theme-color" content="#1d7efd">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="manifest" href="manifest.json">
-
     <style>
         :root {
-            --gemini-blue: #1d7efd;
-            --gemini-purple: #8f6fff;
-            --bg: #f3f7ff;
+            --primary: #1d7efd;
+            --accent: #8f6fff;
+            --bg: #f8faff;
             --card: #ffffff;
-            --text: #090c13;
-            --border: #dce6f9;
+            --text: #1a1c1e;
+            --border: #e1e4e8;
         }
-        body.dark { --bg: #101623; --card: #1e2638; --text: #edf3ff; --border: #333e58; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; transition: 0.3s; }
-        
-        header { padding: 20px; background: var(--card); text-align: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .gradient-text { font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, var(--gemini-blue), var(--gemini-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .container { max-width: 600px; margin: auto; padding: 15px; }
-        
-        /* Widgets */
-        .widget { background: var(--card); padding: 15px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .widget-title { font-size: 0.8rem; font-weight: bold; color: var(--gemini-purple); text-transform: uppercase; margin-bottom: 8px; display: block; }
+        body.dark {
+            --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg); color: var(--text);
+            margin: 0; padding-bottom: 80px; transition: 0.3s;
+        }
 
-        input { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid var(--border); background: var(--card); color: var(--text); font-size: 16px; outline: none; box-sizing: border-box; }
-        
-        .result-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
-        .details-box { display: none; padding: 15px; background: var(--card); border-radius: 15px; border: 1px solid var(--border); margin-bottom: 10px; }
-        
-        .btn { padding: 10px 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-blue { background: var(--gemini-blue); color: white; }
-        
-        .history-tag { display: inline-block; padding: 5px 12px; background: var(--border); border-radius: 20px; font-size: 0.8rem; margin: 4px; cursor: pointer; }
-        
-        /* Quiz Styles */
-        #quiz-area { text-align: center; display: none; }
-        .quiz-opt { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; }
+        /* Header */
+        header {
+            padding: 20px; background: var(--card); text-align: center;
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; letter-spacing: 1px; color: var(--primary); }
 
-        .fab-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .fab { width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--gemini-blue); color: white; font-size: 1.2rem; }
+        .container { max-width: 500px; margin: auto; padding: 15px; }
+
+        /* Suchfeld */
+        .search-box {
+            width: 100%; padding: 16px; border-radius: 15px;
+            border: 2px solid var(--border); background: var(--card);
+            color: var(--text); font-size: 16px; outline: none; box-sizing: border-box;
+        }
+
+        /* Ergebnis-Karten */
+        .result-card {
+            background: var(--card); border-radius: 18px; padding: 18px;
+            margin-top: 15px; border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .word-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .ez-word { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+        .de-word { font-size: 1.1rem; color: var(--text); margin-top: 4px; opacity: 0.8; }
+        
+        /* Details (Definition & Bild) */
+        .details { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border); }
+        .wiki-img { width: 100%; border-radius: 12px; margin: 10px 0; display: none; object-fit: cover; max-height: 200px; }
+        .meta-info { font-size: 0.85rem; line-height: 1.5; color: #64748b; }
+
+        /* Navigation unten */
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+            background: var(--card); border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .nav-item { border: none; background: none; color: #94a3b8; cursor: pointer; text-align: center; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item span { display: block; font-size: 0.7rem; margin-top: 4px; font-weight: 600; }
+
+        .btn-icon { background: var(--bg); border: 1px solid var(--border); border-radius: 50%; width: 40px; height: 40px; cursor: pointer; }
+        
+        #quiz-view, #info-view { display: none; }
     </style>
 </head>
-<body class="light">
+<body>
 
-<header><div class="gradient-text">Jesidisch Pro ✨</div></header>
+<header><div class="logo">EZ-DE-TRANSLATOR</div></header>
 
-<div class="container">
-    <div class="widget" id="word-of-day">
-        <span class="widget-title">Wort des Tages</span>
-        <div id="wod-content" style="font-size: 1.2rem; font-weight: bold;">Lade...</div>
-    </div>
-
-    <div class="search-wrapper" style="margin-bottom: 15px;">
-        <input type="text" id="searchInput" placeholder="Tippen zum Übersetzen...">
-    </div>
-
-    <div id="history-section" style="margin-bottom: 20px; display:none;">
-        <span style="font-size: 0.8rem; color: var(--sub-text);">Zuletzt gesucht:</span>
-        <div id="history-list"></div>
-    </div>
-
-    <div id="sentence-translation" class="widget" style="display:none; border-left: 5px solid var(--gemini-blue);">
-        <div id="translated-text" style="font-size: 1.3rem; font-weight: 600;"></div>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="btn btn-blue" onclick="copySentence()" style="flex:1;">📋 Kopieren</button>
-            <button class="btn" onclick="speakText(document.getElementById('translated-text').innerText)">🔊</button>
-        </div>
-    </div>
-
+<div class="container" id="main-view">
+    <input type="text" id="searchInput" class="search-box" placeholder="Suchen oder Sätze übersetzen..." oninput="doSearch()">
+    
     <div id="results"></div>
+</div>
 
-    <div class="widget" id="quiz-widget">
-        <span class="widget-title">Vokabel-Training</span>
-        <div id="quiz-start">
-            <p>Teste dein Wissen!</p>
-            <button class="btn btn-blue" onclick="startQuiz()">Quiz starten</button>
-        </div>
-        <div id="quiz-area">
-            <p id="quiz-question" style="font-size: 1.1rem; font-weight: bold;"></p>
-            <div id="quiz-options"></div>
-        </div>
+<div class="container" id="quiz-view">
+    <div class="result-card" style="text-align:center;">
+        <h2>Vokabel-Quiz</h2>
+        <p id="q-text">Bereit?</p>
+        <div id="q-options"></div>
+        <button onclick="startQuiz()" class="btn-icon" style="width:auto; padding:0 20px; margin-top:20px;">Start</button>
     </div>
 </div>
 
-<div class="fab-container">
-    <button class="fab" onclick="shareApp()">🔗</button>
-    <button class="fab" style="background:var(--gemini-purple)" onclick="document.body.classList.toggle('dark')">🌓</button>
+<div class="container" id="info-view">
+    <div class="result-card">
+        <h3>Informationen</h3>
+        <p>Dieses Wörterbuch hilft beim Lernen der jesidischen Sprache.</p>
+        <button onclick="shareApp()" class="btn-icon">🔗</button> Teilen
+        <hr>
+        <button onclick="document.body.classList.toggle('dark')" class="btn-icon">🌓</button Dark Mode
+    </div>
 </div>
+
+<nav class="nav-bar">
+    <button class="nav-item active" onclick="showView('main')">🔍<span>Suche</span></button>
+    <button class="nav-item" onclick="showView('quiz')">🎮<span>Quiz</span></button>
+    <button class="nav-item" onclick="showView('info')">⚙️<span>Settings</span></button>
+</nav>
 
 <script>
-    let dictionary = {};
-    let history = JSON.parse(localStorage.getItem('search_history')) || [];
+    let dict = {};
 
-    // 1. Daten laden
-    fetch('jesidisch.json')
-        .then(res => res.json())
-        .then(data => { 
-            dictionary = data; 
-            initWOD();
-            updateHistoryUI();
-        });
+    // 1. Laden
+    fetch('jesidisch.json').then(r => r.json()).then(data => { dict = data; });
 
-    // 2. Suche & Verlauf
-    function search(customQuery) {
-        const query = customQuery || document.getElementById('searchInput').value.trim();
-        if(customQuery) document.getElementById('searchInput').value = customQuery;
+    // 2. Suche
+    async function doSearch() {
+        const q = document.getElementById('searchInput').value.trim();
+        const resDiv = document.getElementById('results');
+        if(!q) { resDiv.innerHTML = ""; return; }
 
-        const container = document.getElementById('results');
-        const sentenceBox = document.getElementById('sentence-translation');
-        if(!query) { container.innerHTML = ""; sentenceBox.style.display="none"; return; }
-
-        addToHistory(query);
-
-        let words = query.split(/\s+/);
-        let html = ""; let sResult = []; let found = false;
-
-        words.forEach(w => {
-            let match = false;
-            for(let key in dictionary) {
-                if(key.toLowerCase() === w.toLowerCase() || dictionary[key].toLowerCase() === w.toLowerCase()) {
-                    const de = dictionary[key].toLowerCase() === w.toLowerCase() ? dictionary[key] : key;
-                    sResult.push(dictionary[key].toLowerCase() === w.toLowerCase() ? key : dictionary[key]);
-                    html += `<div class="result-card" onclick="showDetails('${de}')">
-                        <div><span class="main-word">${key}</span><span class="sub-word">${dictionary[key]}</span></div>
-                        <button class="icon-btn" onclick="event.stopPropagation(); speakText('${dictionary[key]}')">🔊</button>
+        let html = "";
+        for(let ez in dict) {
+            if(ez.toLowerCase().includes(q.toLowerCase()) || dict[ez].toLowerCase().includes(q.toLowerCase())) {
+                const de = dict[ez];
+                html += `
+                <div class="result-card">
+                    <div class="word-header">
+                        <div>
+                            <div class="ez-word">${ez}</div>
+                            <div class="de-word">${de}</div>
+                        </div>
+                        <button class="btn-icon" onclick="speak('${de}')">🔊</button>
                     </div>
-                    <div id="details-${de}" class="details-box"><div id="def-${de}">Lade Info...</div></div>`;
-                    match = true; found = true; break;
-                }
+                    <div class="details" id="det-${de}">
+                        <div class="meta-info" id="text-${de}">Lade Definition...</div>
+                        <img class="wiki-img" id="img-${de}">
+                    </div>
+                </div>`;
+                loadWiki(de);
             }
-            if(!match) sResult.push(w);
-        });
-
-        if(found) {
-            sentenceBox.style.display = "block";
-            document.getElementById('translated-text').innerText = sResult.join(" ");
         }
-        container.innerHTML = html;
+        resDiv.innerHTML = html;
     }
 
-    // 3. Quiz Modus
-    function startQuiz() {
-        const keys = Object.keys(dictionary);
-        if(keys.length < 4) return alert("Zu wenig Wörter im JSON für ein Quiz!");
-        document.getElementById('quiz-start').style.display = "none";
-        document.getElementById('quiz-area').style.display = "block";
+    // 3. Wikipedia API (Definition & Bild)
+    async function loadWiki(word) {
+        try {
+            const r = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${word}`);
+            const d = await r.json();
+            const textEl = document.getElementById(`text-${word}`);
+            const imgEl = document.getElementById(`img-${word}`);
+            
+            if(d.extract) {
+                textEl.innerHTML = `<b>Definition:</b> ${d.extract}<br><br><b>Beispiel:</b> Ein Satz mit "${word}"...`;
+            }
+            if(d.thumbnail) {
+                imgEl.src = d.thumbnail.source;
+                imgEl.style.display = "block";
+            }
+        } catch(e) { console.log("Wiki Fehler"); }
+    }
+
+    // 4. Navigation
+    function showView(v) {
+        document.getElementById('main-view').style.display = v === 'main' ? 'block' : 'none';
+        document.getElementById('quiz-view').style.display = v === 'quiz' ? 'block' : 'none';
+        document.getElementById('info-view').style.display = v === 'info' ? 'block' : 'none';
         
-        const correct = keys[Math.floor(Math.random() * keys.length)];
-        const options = [dictionary[correct]];
-        while(options.length < 4) {
-            let r = dictionary[keys[Math.floor(Math.random() * keys.length)]];
-            if(!options.includes(r)) options.push(r);
-        }
-        options.sort(() => Math.random() - 0.5);
-
-        document.getElementById('quiz-question').innerText = `Was heißt "${correct}"?`;
-        const optCont = document.getElementById('quiz-options');
-        optCont.innerHTML = "";
-        options.forEach(o => {
-            const b = document.createElement('button');
-            b.className = "quiz-opt";
-            b.innerText = o;
-            b.onclick = () => {
-                if(o === dictionary[correct]) { b.style.background = "#10b981"; setTimeout(startQuiz, 1000); }
-                else { b.style.background = "#ef4444"; }
-            };
-            optCont.appendChild(b);
+        document.querySelectorAll('.nav-item').forEach((btn, i) => {
+            btn.classList.toggle('active', (v === 'main' && i === 0) || (v === 'quiz' && i === 1) || (v === 'info' && i === 2));
         });
     }
 
-    // 4. Wort des Tages
-    function initWOD() {
-        const keys = Object.keys(dictionary);
-        const random = keys[Math.floor(Math.random() * keys.length)];
-        document.getElementById('wod-content').innerText = `${random} = ${dictionary[random]}`;
-    }
-
-    // 5. Hilfsfunktionen (Audio, History, Copy)
-    function speakText(t) {
-        const u = new SpeechSynthesisUtterance(t); u.lang = 'de-DE';
+    // 5. Sprachausgabe & Teilen
+    function speak(t) {
+        const u = new SpeechSynthesisUtterance(t);
+        u.lang = 'de-DE';
         window.speechSynthesis.speak(u);
     }
 
-    function addToHistory(q) {
-        if(!history.includes(q)) {
-            history.unshift(q);
-            if(history.length > 5) history.pop();
-            localStorage.setItem('search_history', JSON.stringify(history));
-            updateHistoryUI();
+    function shareApp() {
+        if(navigator.share) {
+            navigator.share({ title: 'EZ-DE-TRANSLATOR', url: window.location.href });
+        } else {
+            alert("Link: " + window.location.href);
         }
     }
 
-    function updateHistoryUI() {
-        const list = document.getElementById('history-list');
-        list.innerHTML = "";
-        if(history.length > 0) document.getElementById('history-section').style.display = "block";
-        history.forEach(h => {
-            const s = document.createElement('span'); s.className = "history-tag";
-            s.innerText = h; s.onclick = () => search(h);
-            list.appendChild(s);
-        });
+    // Einfaches Quiz Start
+    function startQuiz() {
+        const keys = Object.keys(dict);
+        const q = keys[Math.floor(Math.random() * keys.length)];
+        document.getElementById('q-text').innerText = `Was bedeutet: ${q}?`;
+        // Einfachheitshalber hier nur das Wort anzeigen - Logik kann erweitert werden
     }
-
-    async function showDetails(w) {
-        const b = document.getElementById(`details-${w}`);
-        b.style.display = b.style.display === "block" ? "none" : "block";
-        if(b.style.display === "block") {
-            const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${w}`);
-            const d = await res.json();
-            document.getElementById(`def-${w}`).innerText = d.extract || "Keine Definition.";
-        }
-    }
-
-    function copySentence() {
-        navigator.clipboard.writeText(document.getElementById('translated-text').innerText);
-        alert("Kopiert!");
-    }
-
-    document.getElementById('searchInput').addEventListener('input', () => search());
 </script>
 </body>
 </html>
