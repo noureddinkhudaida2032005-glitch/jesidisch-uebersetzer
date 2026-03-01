@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jesidisch Pro</title>
+    <title>Jesidisch Pro - Ultimate</title>
     
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#1d7efd">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
+    <link rel="manifest" href="manifest.json">
 
     <style>
         :root {
@@ -18,177 +17,215 @@
             --bg: #f3f7ff;
             --card: #ffffff;
             --text: #090c13;
-            --sub-text: #606982;
             --border: #dce6f9;
         }
+        body.dark { --bg: #101623; --card: #1e2638; --text: #edf3ff; --border: #333e58; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; transition: 0.3s; }
+        
+        header { padding: 20px; background: var(--card); text-align: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .gradient-text { font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, var(--gemini-blue), var(--gemini-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .container { max-width: 600px; margin: auto; padding: 15px; }
+        
+        /* Widgets */
+        .widget { background: var(--card); padding: 15px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .widget-title { font-size: 0.8rem; font-weight: bold; color: var(--gemini-purple); text-transform: uppercase; margin-bottom: 8px; display: block; }
 
-        body.dark {
-            --bg: #101623;
-            --card: #1e2638;
-            --text: #edf3ff;
-            --sub-text: #97a7ca;
-            --border: #333e58;
-        }
+        input { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid var(--border); background: var(--card); color: var(--text); font-size: 16px; outline: none; box-sizing: border-box; }
+        
+        .result-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+        .details-box { display: none; padding: 15px; background: var(--card); border-radius: 15px; border: 1px solid var(--border); margin-bottom: 10px; }
+        
+        .btn { padding: 10px 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-blue { background: var(--gemini-blue); color: white; }
+        
+        .history-tag { display: inline-block; padding: 5px 12px; background: var(--border); border-radius: 20px; font-size: 0.8rem; margin: 4px; cursor: pointer; }
+        
+        /* Quiz Styles */
+        #quiz-area { text-align: center; display: none; }
+        .quiz-opt { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; }
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg); color: var(--text);
-            margin: 0; padding: 0; transition: 0.3s;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Header Style (Gemini Inspired) */
-        header {
-            padding: 25px 20px;
-            background: var(--card);
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 100;
-        }
-
-        .gradient-text {
-            font-size: 1.5rem; font-weight: bold;
-            background: linear-gradient(to right, var(--gemini-blue), var(--gemini-purple));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-
-        /* Suchfeld */
-        .search-wrapper { margin-bottom: 25px; }
-        input {
-            width: 100%; padding: 18px; border-radius: 20px;
-            border: 2px solid var(--border); background: var(--card);
-            color: var(--text); font-size: 17px; outline: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s;
-        }
-        input:focus { border-color: var(--gemini-blue); box-shadow: 0 4px 20px rgba(29, 126, 253, 0.15); }
-
-        /* Info Bereich */
-        .info-card {
-            background: linear-gradient(135deg, rgba(29,126,253,0.1), rgba(143,111,255,0.1));
-            padding: 15px; border-radius: 15px; margin-bottom: 20px; font-size: 0.9rem;
-            border: 1px solid var(--border);
-        }
-        .info-card a { color: var(--gemini-blue); text-decoration: none; font-weight: bold; }
-
-        /* Wort Karten */
-        .result-card {
-            background: var(--card); padding: 20px; border-radius: 18px;
-            margin-bottom: 15px; display: flex; justify-content: space-between;
-            align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            border: 1px solid var(--border);
-        }
-        .main-word { font-weight: 600; font-size: 1.2rem; color: var(--gemini-blue); display: block; }
-        .sub-word { color: var(--sub-text); font-size: 1rem; margin-top: 4px; display: block; }
-
-        /* Action Buttons */
-        .actions { display: flex; gap: 10px; }
-        .icon-btn {
-            background: var(--bg); border: none; width: 40px; height: 40px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 1.1rem; transition: 0.2s;
-        }
-        .icon-btn:active { transform: scale(0.9); }
-
-        /* Floating Buttons */
-        .fab-container { position: fixed; bottom: 25px; right: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .fab {
-            width: 55px; height: 55px; border-radius: 50%; border: none;
-            background: var(--gemini-blue); color: white; font-size: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: pointer;
-        }
+        .fab-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .fab { width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--gemini-blue); color: white; font-size: 1.2rem; }
     </style>
 </head>
-<body>
+<body class="light">
 
-<header>
-    <div class="gradient-text">Jesidisch Pro</div>
-</header>
+<header><div class="gradient-text">Jesidisch Pro ✨</div></header>
 
 <div class="container">
-    <div class="info-card">
-        ☀️ <b>Wusstest du?</b> Die jesidische Kultur ist eine der ältesten der Welt. 
-        <br><a href="https://de.wikipedia.org/wiki/Jesiden" target="_blank">Mehr über Jesiden erfahren →</a>
+    <div class="widget" id="word-of-day">
+        <span class="widget-title">Wort des Tages</span>
+        <div id="wod-content" style="font-size: 1.2rem; font-weight: bold;">Lade...</div>
     </div>
 
-    <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Suchen oder Übersetzen..." autocomplete="off">
+    <div class="search-wrapper" style="margin-bottom: 15px;">
+        <input type="text" id="searchInput" placeholder="Tippen zum Übersetzen...">
+    </div>
+
+    <div id="history-section" style="margin-bottom: 20px; display:none;">
+        <span style="font-size: 0.8rem; color: var(--sub-text);">Zuletzt gesucht:</span>
+        <div id="history-list"></div>
+    </div>
+
+    <div id="sentence-translation" class="widget" style="display:none; border-left: 5px solid var(--gemini-blue);">
+        <div id="translated-text" style="font-size: 1.3rem; font-weight: 600;"></div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="btn btn-blue" onclick="copySentence()" style="flex:1;">📋 Kopieren</button>
+            <button class="btn" onclick="speakText(document.getElementById('translated-text').innerText)">🔊</button>
+        </div>
     </div>
 
     <div id="results"></div>
+
+    <div class="widget" id="quiz-widget">
+        <span class="widget-title">Vokabel-Training</span>
+        <div id="quiz-start">
+            <p>Teste dein Wissen!</p>
+            <button class="btn btn-blue" onclick="startQuiz()">Quiz starten</button>
+        </div>
+        <div id="quiz-area">
+            <p id="quiz-question" style="font-size: 1.1rem; font-weight: bold;"></p>
+            <div id="quiz-options"></div>
+        </div>
+    </div>
 </div>
 
 <div class="fab-container">
-    <button class="fab" onclick="shareApp()" title="Teilen">🔗</button>
-    <button class="fab" style="background: var(--gemini-purple);" onclick="toggleMode()" title="Dark Mode">🌓</button>
+    <button class="fab" onclick="shareApp()">🔗</button>
+    <button class="fab" style="background:var(--gemini-purple)" onclick="document.body.classList.toggle('dark')">🌓</button>
 </div>
 
 <script>
     let dictionary = {};
-    let favs = JSON.parse(localStorage.getItem('yazidi_favs')) || [];
+    let history = JSON.parse(localStorage.getItem('search_history')) || [];
 
-    // Laden der Daten
+    // 1. Daten laden
     fetch('jesidisch.json')
         .then(res => res.json())
-        .then(data => { dictionary = data; })
-        .catch(() => console.log("Lade jesidisch.json..."));
+        .then(data => { 
+            dictionary = data; 
+            initWOD();
+            updateHistoryUI();
+        });
 
-    function search() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
+    // 2. Suche & Verlauf
+    function search(customQuery) {
+        const query = customQuery || document.getElementById('searchInput').value.trim();
+        if(customQuery) document.getElementById('searchInput').value = customQuery;
+
         const container = document.getElementById('results');
-        if(!query) { container.innerHTML = ""; return; }
+        const sentenceBox = document.getElementById('sentence-translation');
+        if(!query) { container.innerHTML = ""; sentenceBox.style.display="none"; return; }
 
-        let html = "";
-        for(let key in dictionary) {
-            if(key.toLowerCase().includes(query) || dictionary[key].toLowerCase().includes(query)) {
-                const isFav = favs.includes(key) ? "⭐" : "☆";
-                html += `
-                    <div class="result-card">
-                        <div>
-                            <span class="main-word">${key}</span>
-                            <span class="sub-word">${dictionary[key]}</span>
-                        </div>
-                        <div class="actions">
-                            <button class="icon-btn" onclick="copyText('${dictionary[key]}')">📋</button>
-                            <button class="icon-btn" onclick="toggleFav('${key}')">${isFav}</button>
-                        </div>
-                    </div>`;
+        addToHistory(query);
+
+        let words = query.split(/\s+/);
+        let html = ""; let sResult = []; let found = false;
+
+        words.forEach(w => {
+            let match = false;
+            for(let key in dictionary) {
+                if(key.toLowerCase() === w.toLowerCase() || dictionary[key].toLowerCase() === w.toLowerCase()) {
+                    const de = dictionary[key].toLowerCase() === w.toLowerCase() ? dictionary[key] : key;
+                    sResult.push(dictionary[key].toLowerCase() === w.toLowerCase() ? key : dictionary[key]);
+                    html += `<div class="result-card" onclick="showDetails('${de}')">
+                        <div><span class="main-word">${key}</span><span class="sub-word">${dictionary[key]}</span></div>
+                        <button class="icon-btn" onclick="event.stopPropagation(); speakText('${dictionary[key]}')">🔊</button>
+                    </div>
+                    <div id="details-${de}" class="details-box"><div id="def-${de}">Lade Info...</div></div>`;
+                    match = true; found = true; break;
+                }
             }
+            if(!match) sResult.push(w);
+        });
+
+        if(found) {
+            sentenceBox.style.display = "block";
+            document.getElementById('translated-text').innerText = sResult.join(" ");
         }
-        container.innerHTML = html || "<p style='text-align:center; color:gray;'>Kein Eintrag gefunden.</p>";
+        container.innerHTML = html;
     }
 
-    function toggleFav(word) {
-        if(favs.includes(word)) favs = favs.filter(f => f !== word);
-        else favs.push(word);
-        localStorage.setItem('yazidi_favs', JSON.stringify(favs));
-        search();
+    // 3. Quiz Modus
+    function startQuiz() {
+        const keys = Object.keys(dictionary);
+        if(keys.length < 4) return alert("Zu wenig Wörter im JSON für ein Quiz!");
+        document.getElementById('quiz-start').style.display = "none";
+        document.getElementById('quiz-area').style.display = "block";
+        
+        const correct = keys[Math.floor(Math.random() * keys.length)];
+        const options = [dictionary[correct]];
+        while(options.length < 4) {
+            let r = dictionary[keys[Math.floor(Math.random() * keys.length)]];
+            if(!options.includes(r)) options.push(r);
+        }
+        options.sort(() => Math.random() - 0.5);
+
+        document.getElementById('quiz-question').innerText = `Was heißt "${correct}"?`;
+        const optCont = document.getElementById('quiz-options');
+        optCont.innerHTML = "";
+        options.forEach(o => {
+            const b = document.createElement('button');
+            b.className = "quiz-opt";
+            b.innerText = o;
+            b.onclick = () => {
+                if(o === dictionary[correct]) { b.style.background = "#10b981"; setTimeout(startQuiz, 1000); }
+                else { b.style.background = "#ef4444"; }
+            };
+            optCont.appendChild(b);
+        });
     }
 
-    function copyText(text) {
-        navigator.clipboard.writeText(text);
-        alert("Übersetzung kopiert!");
+    // 4. Wort des Tages
+    function initWOD() {
+        const keys = Object.keys(dictionary);
+        const random = keys[Math.floor(Math.random() * keys.length)];
+        document.getElementById('wod-content').innerText = `${random} = ${dictionary[random]}`;
     }
 
-    function toggleMode() {
-        document.body.classList.toggle('dark');
+    // 5. Hilfsfunktionen (Audio, History, Copy)
+    function speakText(t) {
+        const u = new SpeechSynthesisUtterance(t); u.lang = 'de-DE';
+        window.speechSynthesis.speak(u);
     }
 
-    async function shareApp() {
-        const shareData = {
-            title: 'Jesidisch Pro Wörterbuch',
-            text: 'Schau dir dieses jesidische Wörterbuch an!',
-            url: window.location.href
-        };
-        try {
-            if (navigator.share) await navigator.share(shareData);
-            else alert("Link kopiert: " + window.location.href);
-        } catch (err) { console.log(err); }
+    function addToHistory(q) {
+        if(!history.includes(q)) {
+            history.unshift(q);
+            if(history.length > 5) history.pop();
+            localStorage.setItem('search_history', JSON.stringify(history));
+            updateHistoryUI();
+        }
     }
 
-    document.getElementById('searchInput').addEventListener('input', search);
+    function updateHistoryUI() {
+        const list = document.getElementById('history-list');
+        list.innerHTML = "";
+        if(history.length > 0) document.getElementById('history-section').style.display = "block";
+        history.forEach(h => {
+            const s = document.createElement('span'); s.className = "history-tag";
+            s.innerText = h; s.onclick = () => search(h);
+            list.appendChild(s);
+        });
+    }
+
+    async function showDetails(w) {
+        const b = document.getElementById(`details-${w}`);
+        b.style.display = b.style.display === "block" ? "none" : "block";
+        if(b.style.display === "block") {
+            const res = await fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${w}`);
+            const d = await res.json();
+            document.getElementById(`def-${w}`).innerText = d.extract || "Keine Definition.";
+        }
+    }
+
+    function copySentence() {
+        navigator.clipboard.writeText(document.getElementById('translated-text').innerText);
+        alert("Kopiert!");
+    }
+
+    document.getElementById('searchInput').addEventListener('input', () => search());
 </script>
-
 </body>
 </html>
